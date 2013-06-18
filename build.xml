@@ -1,0 +1,79 @@
+<project name="libgdxpreflect" default="jar" basedir=".">
+
+	<path id="classpath">
+		<pathelement location="build" />
+		<pathelement location="libs/gdx.jar" />
+		<pathelement location="libs/junit-4.11.jar" />
+		<pathelement location="libs/hamcrest-core-1.3.jar" />
+	</path>
+
+	<target name="compile" description="compiles source">
+		<mkdir dir="build" />
+
+		<javac destdir="build"
+		       source="1.6"
+		       target="1.6"
+		       debug="on"
+		       debuglevel="lines,vars,source"
+		       includeantruntime="false">
+			<src>
+				<pathelement location="src" />
+			</src>
+			<classpath>
+				<path refid="classpath" />
+			</classpath>
+		</javac>
+
+		<tstamp />
+		<echo message="${DSTAMP}" file="build/timestamp.txt" />
+	</target>
+
+	<target name="compiletests"
+	        description="compiles test source"
+	        depends="compile">
+		<javac destdir="build"
+		       source="1.6"
+		       target="1.6"
+		       debug="on"
+		       debuglevel="lines,vars,source"
+		       includeantruntime="false">
+			<src>
+				<pathelement location="test" />
+			</src>
+			<classpath>
+				<path refid="classpath" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="test"
+	        description="runs the tests. By default all, but use -Dclass= and -Dcase= to narrow it down"
+	        depends="compiletests">
+		<junit printsummary="true">
+			<formatter type="brief" usefile="false" />
+			<classpath>
+				<path refid="classpath" />
+			</classpath>
+			<batchtest unless="class">
+				<fileset dir="test" includes="**/cases/**/*.java" />
+			</batchtest>
+			<test name="com.ryanm.preflect.test.cases.${class}"
+			      if="class"
+			      unless="case" />
+			<test name="com.ryanm.preflect.test.cases.${class}"
+			      methods="${case}"
+			      if="case" />
+		</junit>
+	</target>
+
+	<target name="jar"
+	        description="generate libgdxpreflect jar"
+	        depends="clean,compile">
+		<jar basedir="build" destfile="libgdxpreflect.jar" />
+	</target>
+
+	<target name="clean" description="deletes build directory">
+		<delete dir="build" />
+	</target>
+
+</project>

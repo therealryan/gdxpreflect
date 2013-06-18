@@ -1,6 +1,4 @@
-*.class
+bin
+build
+libgdxpreflect.jar
 
-# Package Files #
-*.jar
-*.war
-*.ear
